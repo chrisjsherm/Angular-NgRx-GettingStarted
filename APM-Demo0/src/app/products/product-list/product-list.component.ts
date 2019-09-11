@@ -41,9 +41,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
     this.store.pipe(select('products')).subscribe(
       products => {
-        if (products) { // Protect against blank initial state.
-          this.displayCode = products.showProductCode;
-        }
+        this.displayCode = products.showProductCode;
       });
   }
 
