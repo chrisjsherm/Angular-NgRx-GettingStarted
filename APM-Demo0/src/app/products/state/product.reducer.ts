@@ -10,10 +10,16 @@ export interface ProductState {
   products: Product[];
 }
 
+const initialState: ProductState = {
+  showProductCode: true,
+  currentProduct: null,
+  products: [],
+};
+
 export function reducer(
-  state,
+  state: ProductState = initialState,
   action
-) {
+): ProductState {
   switch (action.type) {
     case 'TOGGLE_PRODUCT_CODE':
       return {
