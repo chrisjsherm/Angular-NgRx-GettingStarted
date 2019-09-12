@@ -9,7 +9,7 @@ import { NumberValidators } from '../../shared/number.validator';
 import { Store, select } from '@ngrx/store';
 import { ProductState } from '../state/product.state';
 import { getCurrentProduct } from '../state/product.selectors';
-import { ClearCurrentProduct, SetCurrentProduct, Update } from '../state/product.actions';
+import { ClearCurrentProduct, SetCurrentProduct, Update, Create } from '../state/product.actions';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -144,10 +144,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         const p = { ...this.product, ...this.productForm.value };
 
         if (p.id === 0) { // New product.
-          this.productService.createProduct(p).subscribe({
-            next: product => this.store.dispatch(new SetCurrentProduct(product)),
-            error: err => this.errorMessage = err.error
-          });
+          this.store.dispatch(new Create(p));
         } else { // Existing product.
           this.store.dispatch(new Update(p));
         }

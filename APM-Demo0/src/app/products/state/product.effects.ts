@@ -38,4 +38,18 @@ export class ProductEffects {
       )
     )
   );
+
+  @Effect()
+  createProduct$: Observable<Action> = this.actions$.pipe(
+    ofType(productActions.ProductActionTypes.Create),
+    map((action: productActions.Create) => action.payload),
+    mergeMap((product: Product) => // Merge and flatten nested observable.
+      this.productService.createProduct(product).pipe(
+        map(newProduct =>
+          (new productActions.CreateSuccess(newProduct)),
+          catchError(err => of(new productActions.CreateFailure(err))))
+      )
+    )
+  );
+
 }

@@ -61,6 +61,22 @@ export function reducer(
         error: action.payload,
       };
 
+    case ProductActionTypes.CreateSuccess:
+      return {
+        ...state,
+        products: [
+          ...state.products,
+          action.payload,
+        ],
+        error: '', // Clear previous error.
+      };
+
+    case ProductActionTypes.CreateFailure:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
     default:
       return state;
   }
