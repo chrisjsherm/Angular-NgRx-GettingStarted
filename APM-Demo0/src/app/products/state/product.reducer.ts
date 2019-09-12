@@ -68,6 +68,7 @@ export function reducer(
           ...state.products,
           action.payload,
         ],
+        currentProductId: action.payload.id,
         error: '', // Clear previous error.
       };
 
