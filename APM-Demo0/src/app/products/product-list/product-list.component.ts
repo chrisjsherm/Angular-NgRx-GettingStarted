@@ -6,7 +6,7 @@ import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store, select } from '@ngrx/store';
 import { State } from '../state/product.state';
-import { getShowProductCode, getCurrentProduct, getProducts } from '../state/product.selectors';
+import { getShowProductCode, getCurrentProduct, getProducts, getError } from '../state/product.selectors';
 import { ToggleProductCode, InitializeCurrentProduct, SetCurrentProduct, Load } from '../state/product.actions';
 import { takeWhile } from 'rxjs/operators';
 
@@ -27,6 +27,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   selectedProduct: Product | null;
   componentActive = true;
   products$: Observable<Product[]>;
+  errorMessage$: Observable<string>;
 
   constructor(
     private store: Store<State>,
@@ -46,6 +47,8 @@ export class ProductListComponent implements OnInit, OnDestroy {
     this.store.pipe(select(getShowProductCode)).subscribe(
       showProductCode => this.displayCode = showProductCode
     );
+
+    this.errorMessage$ = this.store.pipe(select(getError));
   }
 
   ngOnDestroy(): void {

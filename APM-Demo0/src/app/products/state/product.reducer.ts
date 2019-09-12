@@ -39,7 +39,15 @@ export function reducer(
     case ProductActionTypes.LoadSuccess:
       return {
         ...state,
-        products: action.payload
+        products: action.payload,
+        error: '', // Clear previous error.
+      };
+
+    case ProductActionTypes.LoadFailure:
+      return {
+        ...state,
+        products: [], // Clear previous values on error.
+        error: action.payload,
       };
 
     default:
