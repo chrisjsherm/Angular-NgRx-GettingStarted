@@ -34,21 +34,31 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ) { }
 
   ngOnInit(): void {
+    // Subscribe here because we do not use an async pipe in the template.
     this.store.pipe(
       select(getCurrentProduct),
+      takeWhile(() => this.componentActive),
     ).subscribe(
       currentProduct => this.selectedProduct = currentProduct
     );
 
     this.store.dispatch(new Load());
 
+    // DO NOT subscribe here because we use an async pipe in the template.
     this.products$ = this.store.pipe(select(getProducts));
 
-    this.store.pipe(select(getShowProductCode)).subscribe(
+    // Subscribe here because we do not use an async pipe in the template.
+    this.store.pipe(
+      select(getShowProductCode),
+      takeWhile(() => this.componentActive),
+    ).subscribe(
       showProductCode => this.displayCode = showProductCode
     );
 
-    this.errorMessage$ = this.store.pipe(select(getError));
+    // DO NOT subscribe here because we use an async pipe in the template.
+    this.errorMessage$ = this.store.pipe(
+      select(getError)
+    );
   }
 
   ngOnDestroy(): void {
