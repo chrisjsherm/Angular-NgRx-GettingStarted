@@ -52,4 +52,16 @@ export class ProductEffects {
     )
   );
 
+  @Effect()
+  deleteProduct$: Observable<Action> = this.actions$.pipe(
+    ofType(productActions.ProductActionTypes.Delete),
+    map((action: productActions.Delete) => action.payload),
+    mergeMap((product: Product) => // Merge and flatten nested observable.
+      this.productService.deleteProduct(product.id).pipe(
+        map(() =>
+          (new productActions.DeleteSuccess()),
+          catchError(err => of(new productActions.DeleteFailure(err))))
+      )
+    )
+  );
 }

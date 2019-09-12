@@ -78,6 +78,22 @@ export function reducer(
         error: action.payload,
       };
 
+    case ProductActionTypes.DeleteSuccess:
+      return {
+        ...state,
+        products: state.products.filter(product => {
+          return product.id !== state.currentProductId;
+        }),
+        currentProductId: null,
+        error: '',
+      };
+
+    case ProductActionTypes.DeleteFailure:
+      return {
+        ...state,
+        error: action.payload,
+      };
+
     default:
       return state;
   }

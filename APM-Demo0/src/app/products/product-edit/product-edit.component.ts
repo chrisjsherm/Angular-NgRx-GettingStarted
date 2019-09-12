@@ -8,9 +8,10 @@ import { NumberValidators } from '../../shared/number.validator';
 
 import { Store, select } from '@ngrx/store';
 import { ProductState } from '../state/product.state';
-import { getCurrentProduct } from '../state/product.selectors';
-import { ClearCurrentProduct, SetCurrentProduct, Update, Create } from '../state/product.actions';
+import { getCurrentProduct, getError } from '../state/product.selectors';
+import { ClearCurrentProduct, SetCurrentProduct, Update, Create, Delete } from '../state/product.actions';
 import { takeWhile } from 'rxjs/operators';
+import { of } from 'rxjs';
 
 @Component({
   selector: 'pm-product-edit',
@@ -29,6 +30,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   private validationMessages: { [key: string]: { [key: string]: string } };
   private genericValidator: GenericValidator;
   componentActive = true;
+  errorMessage$: any;
 
   constructor(private fb: FormBuilder,
               private store: Store<ProductState>,
@@ -78,6 +80,11 @@ export class ProductEditComponent implements OnInit, OnDestroy {
     this.productForm.valueChanges.subscribe(
       value => this.displayMessage = this.genericValidator.processMessages(this.productForm)
     );
+
+    // Watch for errors.
+    this.errorMessage$ = this.store.pipe(
+      select(getError)
+    );
   }
 
   ngOnDestroy(): void {
@@ -124,10 +131,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
   deleteProduct(): void {
     if (this.product && this.product.id) {
       if (confirm(`Really delete the product: ${this.product.productName}?`)) {
-        this.productService.deleteProduct(this.product.id).subscribe({
-          next: () => this.store.dispatch(new ClearCurrentProduct()),
-          error: err => this.errorMessage = err.error
-        });
+        this.store.dispatch(new Delete(this.product));
       }
     } else {
       // No need to delete, it was never saved
@@ -150,7 +154,7 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         }
       }
     } else {
-      this.errorMessage = 'Please correct the validation errors.';
+      this.errorMessage$ = of('Please correct the validation errors.');
     }
   }
 
