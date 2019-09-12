@@ -4,6 +4,7 @@ import { Router, ActivatedRoute } from '@angular/router';
 
 import { AuthService } from './auth.service';
 import { Store, select } from '@ngrx/store';
+import { getMaskUserName } from './state/user.reducer';
 
 @Component({
   templateUrl: './login.component.html',
@@ -23,13 +24,9 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.store.pipe(select('users')).subscribe(
-      users => {
-        if (users) { // Protect against blank initial state.
-          this.maskUserName = users.maskUserName;
-        }
-      }
-    )
+    this.store.pipe(select(getMaskUserName)).subscribe(
+      maskUserName => this.maskUserName = maskUserName
+    );
   }
 
   cancel(): void {
