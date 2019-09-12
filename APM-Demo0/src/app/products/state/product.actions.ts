@@ -22,14 +22,10 @@ export class SetCurrentProduct implements Action {
 
 export class ClearCurrentProduct implements Action {
   readonly type = ProductActionTypes.ClearCurrentProduct;
-
-  constructor(public payload: boolean) { }
 }
 
 export class InitializeCurrentProduct implements Action {
   readonly type = ProductActionTypes.InitializeCurrentProduct;
-
-  constructor(public payload: boolean) { }
 }
 
 export type ProductActions =
