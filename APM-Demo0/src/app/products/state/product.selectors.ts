@@ -1,5 +1,5 @@
 import { createFeatureSelector, createSelector } from '@ngrx/store';
-import { ProductState } from './product.state';
+import { ProductState, newProduct } from './product.state';
 
 
 // Select the products slice of the state.
@@ -11,9 +11,23 @@ export const getShowProductCode = createSelector(
   state => state.showProductCode
 );
 
+export const getCurrentProductId = createSelector(
+  getProductFeatureState,
+  state => state.currentProductId,
+);
+
 export const getCurrentProduct = createSelector(
   getProductFeatureState,
-  state => state.currentProduct
+  getCurrentProductId,
+  (state, currentProductId) => {
+    if (currentProductId === 0) { // new product.
+      return newProduct;
+    }
+
+    return currentProductId ? state.products.find(
+      product => product.id === currentProductId
+    ) : null;
+  }
 );
 
 export const getProducts = createSelector(

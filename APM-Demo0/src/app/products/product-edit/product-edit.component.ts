@@ -9,7 +9,7 @@ import { NumberValidators } from '../../shared/number.validator';
 import { Store, select } from '@ngrx/store';
 import { ProductState } from '../state/product.state';
 import { getCurrentProduct } from '../state/product.selectors';
-import { ClearCurrentProduct, SetCurrentProduct } from '../state/product.actions';
+import { ClearCurrentProduct, SetCurrentProduct, Update } from '../state/product.actions';
 import { takeWhile } from 'rxjs/operators';
 
 @Component({
@@ -143,16 +143,13 @@ export class ProductEditComponent implements OnInit, OnDestroy {
         // This ensures values not on the form, such as the Id, are retained
         const p = { ...this.product, ...this.productForm.value };
 
-        if (p.id === 0) {
+        if (p.id === 0) { // New product.
           this.productService.createProduct(p).subscribe({
             next: product => this.store.dispatch(new SetCurrentProduct(product)),
             error: err => this.errorMessage = err.error
           });
-        } else {
-          this.productService.updateProduct(p).subscribe({
-            next: product => this.store.dispatch(new SetCurrentProduct(product)),
-            error: err => this.errorMessage = err.error
-          });
+        } else { // Existing product.
+          this.store.dispatch(new Update(p));
         }
       }
     } else {

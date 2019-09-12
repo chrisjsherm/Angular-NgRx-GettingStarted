@@ -1,5 +1,5 @@
 import { ProductActions, ProductActionTypes } from './product.actions';
-import { ProductState, initialState } from './product.state';
+import { ProductState, initialState, newProduct } from './product.state';
 
 export function reducer(
   state: ProductState = initialState,
@@ -15,25 +15,19 @@ export function reducer(
     case ProductActionTypes.SetCurrentProduct:
       return {
         ...state,
-        currentProduct: { ...action.payload }
+        currentProductId: action.payload.id,
       };
 
     case ProductActionTypes.ClearCurrentProduct:
       return {
         ...state,
-        currentProduct: null,
+        currentProductId: null,
       };
 
     case ProductActionTypes.InitializeCurrentProduct:
       return {
         ...state,
-        currentProduct: {
-          id: 0,
-          productName: '',
-          productCode: 'New',
-          description: '',
-          starRating: 0,
-        }
+        currentProductId: newProduct.id,
       };
 
     case ProductActionTypes.LoadSuccess:
@@ -47,6 +41,23 @@ export function reducer(
       return {
         ...state,
         products: [], // Clear previous values on error.
+        error: action.payload,
+      };
+
+    case ProductActionTypes.UpdateSuccess:
+      const updatedProducts = state.products.map( // Use `map` to return a new array.
+        item => action.payload.id === item.id ? action.payload : item
+      );
+      return {
+        ...state,
+        products: updatedProducts,
+        currentProductId: action.payload.id,
+        error: '', // Clear previous error.
+      };
+
+    case ProductActionTypes.UpdateFail:
+      return {
+        ...state,
         error: action.payload,
       };
 
