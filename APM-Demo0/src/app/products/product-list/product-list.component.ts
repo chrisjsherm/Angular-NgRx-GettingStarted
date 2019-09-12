@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 
-import { Subscription } from 'rxjs';
+import { Subscription, Observable } from 'rxjs';
 
 import { Product } from '../product';
 import { ProductService } from '../product.service';
@@ -26,6 +26,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
   // Used to highlight the selected product in the list
   selectedProduct: Product | null;
   componentActive = true;
+  products$: Observable<Product[]>;
 
   constructor(
     private store: Store<State>,
@@ -34,16 +35,13 @@ export class ProductListComponent implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.store.pipe(
       select(getCurrentProduct),
-      takeWhile(() => this.componentActive) // automatically unsubscribe when componentActive becomes false.
     ).subscribe(
       currentProduct => this.selectedProduct = currentProduct
     );
 
     this.store.dispatch(new Load());
 
-    this.store.pipe(select(getProducts)).subscribe(
-      (products: Product[]) => this.products = products
-    );
+    this.products$ = this.store.pipe(select(getProducts));
 
     this.store.pipe(select(getShowProductCode)).subscribe(
       showProductCode => this.displayCode = showProductCode
