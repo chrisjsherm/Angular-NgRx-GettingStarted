@@ -1,47 +1,12 @@
-import { Product } from '../product';
-import * as fromRoot from '../../state/app.state';
-import { createFeatureSelector, createSelector } from '@ngrx/store';
-
-export interface State extends fromRoot.State {
-  products: ProductState;
-}
-export interface ProductState {
-  showProductCode: boolean;
-  currentProduct: Product;
-  products: Product[];
-}
-
-const initialState: ProductState = {
-  showProductCode: true,
-  currentProduct: null,
-  products: [],
-};
-
-// Select the products slice of the state.
-const getProductFeatureState = createFeatureSelector<ProductState>('products');
-
-// Use the products state slice to get the showProductCode property.
-export const getShowProductCode = createSelector(
-  getProductFeatureState,
-  state => state.showProductCode
-);
-
-export const getCurrentProduct = createSelector(
-  getProductFeatureState,
-  state => state.currentProduct
-);
-
-export const getProducts = createSelector(
-  getProductFeatureState,
-  state => state.products
-);
+import { ProductActions, ProductActionTypes } from './product.actions';
+import { ProductState, initialState } from './product.state';
 
 export function reducer(
   state: ProductState = initialState,
-  action
+  action: ProductActions
 ): ProductState {
   switch (action.type) {
-    case 'TOGGLE_PRODUCT_CODE':
+    case ProductActionTypes.ToggleProductCode:
       return {
         ...state,
         showProductCode: action.payload,

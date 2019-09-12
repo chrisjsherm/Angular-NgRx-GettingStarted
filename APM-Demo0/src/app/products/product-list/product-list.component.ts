@@ -5,7 +5,9 @@ import { Subscription } from 'rxjs';
 import { Product } from '../product';
 import { ProductService } from '../product.service';
 import { Store, select } from '@ngrx/store';
-import { State, getShowProductCode } from '../state/product.reducer';
+import { State } from '../state/product.state';
+import { getShowProductCode } from '../state/product.selectors';
+import { ProductActionTypes } from '../state/product.actions';
 
 @Component({
   selector: 'pm-product-list',
@@ -50,7 +52,7 @@ export class ProductListComponent implements OnInit, OnDestroy {
 
   checkChanged(value: boolean): void {
     this.store.dispatch({
-      type: 'TOGGLE_PRODUCT_CODE',
+      type: ProductActionTypes.ToggleProductCode,
       payload: value,
     });
   }
